@@ -4,6 +4,7 @@
  */
 
 import * as THREE from 'three'
+import { threeoctree } from '../helpers/threeoctree';
 
 /**
  * Calculate the key for the "trio" - 3 consecutive numbers in `array` starting from `startIndex`
