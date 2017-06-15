@@ -1,86 +1,86 @@
 solid Onshape
   facet normal 0 0 -1
     outer loop
-      vertex 20 10 0
-      vertex 20 0 0
-      vertex 10 10 0
+      vertex 21 11 0
+      vertex 21 4.63581e-15 0
+      vertex 10 11 0
     endloop
   endfacet
   facet normal 0 0 -1
     outer loop
-      vertex 20 0 0
+      vertex 21 4.63581e-15 0
       vertex 10 0 0
-      vertex 10 10 0
+      vertex 10 11 0
     endloop
   endfacet
   facet normal 0 0 1
     outer loop
-      vertex 20 0 10
-      vertex 20 10 10
-      vertex 10 0 10
+      vertex 21 4.63581e-15 11
+      vertex 21 11 11
+      vertex 10 0 11
     endloop
   endfacet
   facet normal 0 0 1
     outer loop
-      vertex 20 10 10
-      vertex 10 10 10
-      vertex 10 0 10
+      vertex 21 11 11
+      vertex 10 11 11
+      vertex 10 0 11
     endloop
   endfacet
   facet normal -1 0 0
     outer loop
-      vertex 10 0 10
-      vertex 10 10 10
+      vertex 10 0 11
+      vertex 10 11 11
       vertex 10 0 0
     endloop
   endfacet
   facet normal -1 0 0
     outer loop
-      vertex 10 10 10
-      vertex 10 10 0
+      vertex 10 11 11
+      vertex 10 11 0
       vertex 10 0 0
     endloop
   endfacet
-  facet normal 0 -1 0
+  facet normal 4.21437e-16 -1 0
     outer loop
-      vertex 20 0 10
-      vertex 10 0 10
-      vertex 20 0 0
+      vertex 21 4.63581e-15 11
+      vertex 10 0 11
+      vertex 21 4.63581e-15 0
     endloop
   endfacet
-  facet normal 0 -1 0
+  facet normal 4.21437e-16 -1 0
     outer loop
-      vertex 10 0 10
+      vertex 10 0 11
       vertex 10 0 0
-      vertex 20 0 0
+      vertex 21 4.63581e-15 0
     endloop
   endfacet
   facet normal 1 0 0
     outer loop
-      vertex 20 10 10
-      vertex 20 0 10
-      vertex 20 10 0
+      vertex 21 11 11
+      vertex 21 4.63581e-15 11
+      vertex 21 11 0
     endloop
   endfacet
   facet normal 1 0 0
     outer loop
-      vertex 20 0 10
-      vertex 20 0 0
-      vertex 20 10 0
+      vertex 21 4.63581e-15 11
+      vertex 21 4.63581e-15 0
+      vertex 21 11 0
     endloop
   endfacet
   facet normal 0 1 0
     outer loop
-      vertex 10 10 10
-      vertex 20 10 10
-      vertex 10 10 0
+      vertex 10 11 11
+      vertex 21 11 11
+      vertex 10 11 0
     endloop
   endfacet
   facet normal 0 1 0
     outer loop
-      vertex 20 10 10
-      vertex 20 10 0
-      vertex 10 10 0
+      vertex 21 11 11
+      vertex 21 11 0
+      vertex 10 11 0
     endloop
   endfacet
   facet normal 0 0 -1

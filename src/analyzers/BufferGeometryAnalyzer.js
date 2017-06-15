@@ -120,6 +120,7 @@ var BufferGeometryAnalyzer = {
      */
 
 	isolatedGeometries: function ( geometry, precisionPoints=4 ) {
+        let startTime = Date.now();
         let posAttr = geometry.getAttribute('position');
         let octree = new THREE.Octree({});
         let vertexCount = posAttr.count;
@@ -175,16 +176,17 @@ var BufferGeometryAnalyzer = {
         };
 
         let floodFill = function(start, mark, isMarked, getNeighbors) {
-            let floodFillHelper = function (current) {
+            let toFill = [start];
+            while (toFill.length > 0) {
+                let current = toFill.pop();
                 if (isMarked(current)) {
-                    return;
+                    continue;
                 }
                 mark(current);
                 for (let neighbor of getNeighbors(current)) {
-                    floodFillHelper(neighbor);
+                    toFill.push(neighbor);
                 }
-            };
-            floodFillHelper(start);
+            }
         };
         let markedTriangles = [];  // Mark triangles by which geometry they belong to.
         let nextUnmarkedTriangle = 0;
@@ -214,7 +216,8 @@ var BufferGeometryAnalyzer = {
                       });
         }
         console.log(trianglesPerSplitGeometry);
-
+        console.log("done " + (Date.now() - startTime));
+        startTime = Date.now();
         var originalPositions = geometry.attributes.position.array;
         var originalNormals = geometry.attributes.normal !== undefined ? geometry.attributes.normal.array : undefined;
         var originalColors = geometry.attributes.color !== undefined ? geometry.attributes.color.array : undefined;
@@ -281,7 +284,7 @@ var BufferGeometryAnalyzer = {
 
             return geometry;
         });
-
+        console.log("done2 " + (Date.now() - startTime));
         return geometries;
     },
 
