@@ -16,7 +16,7 @@
     "dev": "npm-run-all --parallel server reload watch",
     "clean": "rimraf dist && mkdirp dist ",
     "pretest": "npm run build",
-    "test": "mocha",
+    "test": "mocha --require babel-polyfill",
     "prepublish": "npm test"
   },
   "keywords": [
@@ -35,6 +35,8 @@
     "three": "^0.84.0"
   },
   "devDependencies": {
+    "babel-core": "^6.0.20",
+    "babel-polyfill": "^6.23.0",
     "babel-eslint": "^7.1.1",
     "babel-plugin-external-helpers": "^6.18.0",
     "babel-preset-es2015": "^6.18.0",

@@ -122,9 +122,10 @@ var BufferGeometryAnalyzer = {
 	isolatedGeometries: function ( geometry, precisionPoints=4 ) {
         let posAttr = geometry.getAttribute('position');
         let octree = new THREE.Octree({});
-        let VertexCount = posAttr.count;
+        let vertexCount = posAttr.count;
         let precision = 10**(-precisionPoints);
-        for (let vertex=0; vertex < VertexCount; vertex++) {
+        let precisionSquared = 10**(-precisionPoints*2);
+        for (let vertex=0; vertex < vertexCount; vertex++) {
             let newPoint = new THREE.Vector3().fromBufferAttribute(posAttr, vertex);
             newPoint['radius'] = precision;
             newPoint['id'] = vertex;
@@ -134,15 +135,18 @@ var BufferGeometryAnalyzer = {
 
         // vertex is an index into posAttr.  Return the triangle that
         // includes the vertex.
-        let triangleFromVertex = function(vertex) {
-            vertex -= vertex%3;
-            let a = new THREE.Vector3().fromBufferAttribute(posAttr, vertex  );
-            let b = new THREE.Vector3().fromBufferAttribute(posAttr, vertex+1);
-            let c = new THREE.Vector3().fromBufferAttribute(posAttr, vertex+2);
-            return {a:a, b:b, c:c};
+        let triangleFromVertex = function(vertexId) {
+            vertexId -= vertexId%3;
+            let a = new THREE.Vector3().fromBufferAttribute(posAttr, vertexId  );
+            let b = new THREE.Vector3().fromBufferAttribute(posAttr, vertexId+1);
+            let c = new THREE.Vector3().fromBufferAttribute(posAttr, vertexId+2);
+            let id = vertexId / 3; // Every 3 vertices is a triangle.
+            return {a:a, b:b, c:c, id:id};
         };
 
-        // Find all triangles that have a corner at point.
+        // Find all triangles that have a corner at point.  May
+        // include triangles that aren't exactly at the point but
+        // won't miss any triangles.
         let trianglesFromPoint = function(point) {
             let result = [];
             for (let o of octree.search(point, precision)) {
@@ -151,18 +155,65 @@ var BufferGeometryAnalyzer = {
                 result.push(triangle);
             }
             return result;
-        }
+        };
+        let pointsEqual = function(p0,p1) {
+            // points are equal if they are within precision distance from one another.
+            return p0.distanceTo(p1) < precisionSquared;
+        };
+        let trianglesAdjacent = function (t0,t1) {
+            // triangles are connected if they share an edge and the
+            // edge has reversed direction.
+            return (pointsEqual(t0.a, t1.b) && pointsEqual(t0.b, t1.a) ||
+                pointsEqual(t0.a, t1.c) && pointsEqual(t0.b, t1.b) ||
+                pointsEqual(t0.a, t1.a) && pointsEqual(t0.b, t1.c) ||
+                pointsEqual(t0.b, t1.b) && pointsEqual(t0.c, t1.a) ||
+                pointsEqual(t0.b, t1.c) && pointsEqual(t0.c, t1.b) ||
+                pointsEqual(t0.b, t1.a) && pointsEqual(t0.c, t1.c) ||
+                pointsEqual(t0.c, t1.b) && pointsEqual(t0.a, t1.a) ||
+                pointsEqual(t0.c, t1.c) && pointsEqual(t0.a, t1.b) ||
+                pointsEqual(t0.c, t1.a) && pointsEqual(t0.a, t1.c));
+        };
+
+        let floodFill = function(start, mark, isMarked, getNeighbors) {
+            let floodFillHelper = function (current) {
+                if (isMarked(current)) {
+                    return;
+                }
+                mark(current);
+                for (let neighbor of getNeighbors(current)) {
+                    floodFillHelper(neighbor);
+                }
+            };
+            floodFillHelper(start);
+        };
         let markedTriangles = [];  // Mark triangles by which geometry they belong to.
         let nextUnmarkedTriangle = 0;
-        let triangleCount = vertexCount/3;
-        let splitGeometries = [];
-        do {
-            while (markedTriangles[nextUnmarkedTriangle] !== undefined) {
+        const totalTriangleCount = vertexCount/3;  // The total number of triangles
+        let trianglesPerSplitGeometry = [];  // Number of triangles in each split geometry so far.
+        while (nextUnmarkedTriangle < totalTriangleCount) {
+            if (markedTriangles[nextUnmarkedTriangle] !== undefined) {
                 nextUnmarkedTriangle++;
+                continue;
             }
-            console.log(o.object.id);
+            let currentMark = trianglesPerSplitGeometry.length;
+            trianglesPerSplitGeometry[currentMark] = 0;
+            floodFill(nextUnmarkedTriangle,
+                      function (x) { markedTriangles[x] = currentMark;
+                                     trianglesPerSplitGeometry[currentMark]++; }, // mark
+                      function (x) { return markedTriangles[x] !== undefined; }, // isMarked
+                      function* (triangleId) {
+                          let vertexId = triangleId * 3; // Any of the 3 vertices will work.
+                          let thisTriangle = triangleFromVertex(vertexId);
+                          for (let corner of [thisTriangle.a, thisTriangle.b, thisTriangle.c]) {
+                              for (let thatTriangle of trianglesFromPoint(corner)) {
+                                  if (trianglesAdjacent(thisTriangle, thatTriangle)) {
+                                      yield thatTriangle.id;
+                                  }
+                              }
+                          }
+                      });
         }
-
+        console.log(trianglesPerSplitGeometry);
 
         var originalPositions = geometry.attributes.position.array;
         var originalNormals = geometry.attributes.normal !== undefined ? geometry.attributes.normal.array : undefined;

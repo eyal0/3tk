@@ -7,9 +7,9 @@ import '../src/helpers/threeoctree';
 
 describe("IsloatedGeometries tests", function() {
     it("compare stl with adjacent boxes", function (done) {
-        FS.readFile("./adjacent_boxes.stl", 'utf8', function (err, data) {
+        FS.readFile(__dirname + "/DINOSAUR_JUMP.stl", null, function (err, data) {
             expect(err).to.be.null;
-            let g = new STLLoader().parse(data);
+            let g = new STLLoader().parse(data.buffer);
             let isolated = BufferGeometryAnalyzer.isolatedGeometries(g);
             expect(isolated).to.have.lengthOf(2);
             done();
