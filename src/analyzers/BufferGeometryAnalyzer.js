@@ -120,6 +120,49 @@ var BufferGeometryAnalyzer = {
      */
 
 	isolatedGeometries: function ( geometry, precisionPoints=4 ) {
+        let posAttr = geometry.getAttribute('position');
+        let octree = new THREE.Octree({});
+        let VertexCount = posAttr.count;
+        let precision = 10**(-precisionPoints);
+        for (let vertex=0; vertex < VertexCount; vertex++) {
+            let newPoint = new THREE.Vector3().fromBufferAttribute(posAttr, vertex);
+            newPoint['radius'] = precision;
+            newPoint['id'] = vertex;
+            octree.add(newPoint);
+        }
+        octree.update();
+
+        // vertex is an index into posAttr.  Return the triangle that
+        // includes the vertex.
+        let triangleFromVertex = function(vertex) {
+            vertex -= vertex%3;
+            let a = new THREE.Vector3().fromBufferAttribute(posAttr, vertex  );
+            let b = new THREE.Vector3().fromBufferAttribute(posAttr, vertex+1);
+            let c = new THREE.Vector3().fromBufferAttribute(posAttr, vertex+2);
+            return {a:a, b:b, c:c};
+        };
+
+        // Find all triangles that have a corner at point.
+        let trianglesFromPoint = function(point) {
+            let result = [];
+            for (let o of octree.search(point, precision)) {
+                let vertex = o.object.id;
+                let triangle = triangleFromVertex(vertex);
+                result.push(triangle);
+            }
+            return result;
+        }
+        let markedTriangles = [];  // Mark triangles by which geometry they belong to.
+        let nextUnmarkedTriangle = 0;
+        let triangleCount = vertexCount/3;
+        let splitGeometries = [];
+        do {
+            while (markedTriangles[nextUnmarkedTriangle] !== undefined) {
+                nextUnmarkedTriangle++;
+            }
+            console.log(o.object.id);
+        }
+
 
         var originalPositions = geometry.attributes.position.array;
         var originalNormals = geometry.attributes.normal !== undefined ? geometry.attributes.normal.array : undefined;
