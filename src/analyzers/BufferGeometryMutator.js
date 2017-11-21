@@ -665,13 +665,12 @@ class BufferGeometryMutator {
 
                 let vertexToMove = [];
                 for (let i = 0; i < positions.length; i++) {
-                    let secondIntersectionPoint = plane.intersectLine(line.set(vertices[i][0], vertices[i][2]));
+                    let secondDistance = plane.distanceToPoint(vertices[i][2]);
                     // Which vertex needs to be moved to the intersection
                     // so that the new face created won't need further
                     // splitting?
-                    if (secondIntersectionPoint === undefined ||
-                        secondIntersectionPoint.equals(vertices[i][0]) ||
-                        secondIntersectionPoint.equals(vertices[i][2])) {
+                    if (distances[i] > 0 && secondDistance > 0 ||
+                        distances[i] < 0 && secondDistance < 0) {
                         // No intersection with plane from position 0 to
                         // position 2, so let that be part of the new face.
                         vertexToMove[i] = 0;
