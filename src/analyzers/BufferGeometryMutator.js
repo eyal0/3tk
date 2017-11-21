@@ -1472,7 +1472,9 @@ class BufferGeometryMutator {
             // Add the new face to the positions.
             let newPosition = this.positions.length;
             this.setPositions(this.vector3sFromPositions(smallestABC, [a, b, c]), newPosition);
-            this.setColors(this.colorsFromPositions(smallestABC, [a, b, c]), newPosition);
+            if (this.colors) {
+                this.setColors(this.colorsFromPositions(smallestABC, [a, b, c]), newPosition);
+            }
             // Add all the edges to the unconnected edges.
             unconnectedEdges.add(newPosition);
             unconnectedEdges.add(newPosition+3);
