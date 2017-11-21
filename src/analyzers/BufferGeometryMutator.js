@@ -1153,6 +1153,8 @@ class BufferGeometryMutator {
     // where they were choped.
     chop(plane) {
         let splitPositions = this.splitFaces(plane);
+        this.removeDegenerates(this.range(this.positions.length/9));
+        this.deleteDegenerates();
 
         let newBufferGeometryMutators = this.disconnectAtSplit(plane, splitPositions);
         for (let newBufferGeometryMutator of newBufferGeometryMutators) {
