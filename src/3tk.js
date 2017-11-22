@@ -8,3 +8,4 @@ export { STLBinaryExporter } from './exporters/STLBinaryExporter.js';
 export { ConvexGeometry, ConvexBufferGeometry } from './geometries/ConvexGeometry.js';
 export { BufferGeometryMutator } from './analyzers/BufferGeometryMutator.js';
 export { QuickHull } from './geometries/QuickHull.js';
+export { STLExporter } from './exporters/STLExporter.js';

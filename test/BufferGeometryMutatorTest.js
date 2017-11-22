@@ -1,5 +1,4 @@
-import { BufferGeometryAnalyzer, BufferGeometryMutator, STLLoader, STLBinaryExporter } from '..';
-import { STLExporter } from '../src/exporters/STLExporter';
+import { BufferGeometryAnalyzer, BufferGeometryMutator, STLLoader, STLExporter, STLBinaryExporter } from '..';
 import { expect } from 'chai';
 import fs from 'fs';
 import * as THREE from 'three';
