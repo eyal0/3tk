@@ -1391,8 +1391,9 @@ class BufferGeometryMutator {
                 for (let i = 0; i < 2; i++) {
                     vertices[i] = this.vector3sFromPositions(positions[i], vertices[i]);
                 }
+                const EPSILON = 0.001;
                 if (this.angle3(vertices[0][1], vertices[0][2], vertices[0][0]) +
-                    this.angle3(vertices[1][1], vertices[1][2], vertices[1][0]) <= Math.PI) {
+                    this.angle3(vertices[1][1], vertices[1][2], vertices[1][0]) <= Math.PI + EPSILON) {
                     // Rotating this edge would not be an improvement.
                     continue;
                 }

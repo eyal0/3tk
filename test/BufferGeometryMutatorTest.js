@@ -203,20 +203,21 @@ describe("BufferGeometryMutator", function() {
             fs.writeFileSync("DINOSAUR_JUMP_merged.stl", new Buffer(new STLExporter().parse(obj)), 'ascii');
         });
 
-        it("dino jump just retriangle", function () {
+        it("ammobox just retriangle", function () {
             if (!process.env.INCLUDE_LARGE_TESTS) {
                 this.skip();
             }
             this.timeout(30000);
-            let stl = fs.readFileSync("test/data/DINOSAUR_JUMP.stl", {encoding: "binary"});
+            let stl = fs.readFileSync("test/data/ammobox.stl", {encoding: "binary"});
             let geometry = new STLLoader().parse(stl);
             let connectedSTL = new BufferGeometryMutator().fromBufferGeometry(geometry);
+            connectedSTL.mergeFaces();
             connectedSTL.retriangle(
                 Array.from(new Array(connectedSTL.positions.length/9).keys()));
             let mesh = new THREE.Mesh(connectedSTL.bufferGeometry());
             let obj = new THREE.Object3D();
             obj.add(mesh);
-            fs.writeFileSync("DINOSAUR_JUMP_retriangle.stl", new Buffer(new STLExporter().parse(obj)), 'ascii');
+            fs.writeFileSync("ammobox_retriangle.stl", new Buffer(new STLExporter().parse(obj)), 'ascii');
         });
 
         it("dino jump just chop", function () {
